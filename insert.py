@@ -30,7 +30,7 @@ def insert_into(table, fields, values, file):
 
 def generate_character(index, names, family_status):
     values_for_character = list()
-    values_for_character.append(index)
+    #values_for_character.append(index)
     name = names[choice(range(0, len(names)))]
     values_for_character.append(name[0])
     values_for_character.append(family_status[choice(range(0, len(family_status)))])
@@ -59,7 +59,7 @@ def generate_all_characters():
             arr = s.replace('\n', '')
             nicknames.append(arr)
 
-    field = ['id_character', 'name', 'family_status', 'date_of_birth',
+    field = ['name', 'family_status', 'date_of_birth',
              'gender']
     # generate kings
     for i in range(START):
@@ -129,7 +129,7 @@ def generate_all_characters():
         insert_into('bogatyr', bogatyr_fields, values_for_bogatyr, 'SQL/bogatyr.sql')
 
     # generate wizard
-    for i in range(START * 6, START * 7):
+    for i in range(START * 5, START * 6):
         wizard_fields = ['id_character', 'ward', 'magic_level']
         values_for_character = generate_character(i, names, family_status)
         values_for_wizard = list()
@@ -140,7 +140,7 @@ def generate_all_characters():
         insert_into('wizard', wizard_fields, values_for_wizard, 'SQL/wizard.sql')
 
     # generate villian
-    for i in range(START * 7, START * 8):
+    for i in range(START * 6, START * 7):
         villain_fields = ['id_character', 'enemies', 'damage']
         values_for_character = generate_character(i, names, family_status)
         values_for_villain = list()
@@ -161,9 +161,9 @@ def generate_users():
 
     for i in range(USERS):
         table_name = 'users'
-        field = ['id_user', 'role', 'nick', 'score', 'registration_date']
+        field = ['role', 'nick', 'score', 'registration_date']
         values = list()
-        values.append(i)
+        # values.append(i)
         values.append(roles[choice(range(0, len(roles)))])
         values.append(
             names[choice(range(0, len(names)))] + str(i))
@@ -175,10 +175,10 @@ def generate_users():
 def generate_vote(fairy_tale):
     type = ['Создание', 'Редактирование', 'Удаление']
     table_name = 'vote'
-    field = ['id_vote', 'type', 'start_time', 'end_time', 'content', 'bet']
+    field = ['type', 'start_time', 'end_time', 'content', 'bet']
     for i in range(VOTE):
         values = list()
-        values.append(i)
+        # values.append(i)
         values.append(type[choice(range(0, len(type)))])
         start_time = get_random_date('2015-01-01 00:00', 6 * 365)
         values.append(start_time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -189,7 +189,7 @@ def generate_vote(fairy_tale):
 
 
 def generate_location():
-    field = ['id_location', 'id_state', 'name']
+    field = ['id_state', 'name']
     countries = []
     with open('country.csv', 'r', encoding='utf-8') as f:
         for s in f.readlines():
@@ -197,7 +197,7 @@ def generate_location():
             countries.append(arr[2].replace('\"', ""))
     for i in range(LOCATION):
         values = list()
-        values.append(i)
+        # values.append(i)
         state = randint(-10000, i-1)
         if state > 0:
             values.append(state)
@@ -213,10 +213,10 @@ def generate_fairy_tale(fairy_tale):
         for s in f.readlines():
             arr = s.replace('\n', '').split(';')
             names.append(arr[0])
-    field = ['id_fairy_tale', 'name', 'id_author', 'rating', 'content', 'creating_date']
+    field = ['name', 'id_author', 'rating', 'content', 'creating_date']
     for i in range(FAIRY_TALE):
         values = list()
-        values.append(i)
+        # values.append(i)
         values.append('Cказка о '+names[choice(range(0, len(names)))])
         values.append(randint(0, USERS - 1))
         values.append(randint(0, 100))
@@ -247,8 +247,8 @@ def generate_participation():
 def generate_mane_to_many(max_index_1, max_index_2, table_name, field, file_name, count):
     values = list()
     for i in range(count):
-        a = randint(0, max_index_1-1)
-        b = randint(0, 4000)
+        a = randint(0, max_index_1 - 1)
+        b = randint(0, max_index_2 - 1)
         values.append([a, b])
     new_values = list()
     for i in values:
@@ -264,7 +264,6 @@ if __name__ == '__main__':
         for s in f.readlines():
             arr = s.replace('\n', "").replace('     ', '').replace("\"", '').replace("\'", '')
             fairy_tale.append(arr)
-    """
     generate_users()
     generate_all_characters()
     generate_vote(fairy_tale)
@@ -273,9 +272,8 @@ if __name__ == '__main__':
     generate_mane_to_many(VOTE, FAIRY_TALE, 'requests', ['id_vote', 'id_fairy_tale'], 'SQL/requests.sql', 100)
     generate_mane_to_many(CHARACTERS, LOCATION, 'resident', ['id_character', 'id_location'], 'SQL/resident.sql', 100)
     generate_mane_to_many(FAIRY_TALE, LOCATION, 'story_location', ['id_fairy_tale', ' id_location'], 'SQL/story_location.sql', 100)
-    """
     generate_mane_to_many(FAIRY_TALE, CHARACTERS, 'story_character', ['id_fairy_tale', 'id_character'], 'SQL/story_character.sql', 100)
-    #generate_mane_to_many(USERS, FAIRY_TALE, 'bookshelf', ['id_user', 'id_fairy_tale'], 'SQL/bookshelf.sql', 100)
+    generate_mane_to_many(USERS, FAIRY_TALE, 'bookshelf', ['id_user', 'id_fairy_tale'], 'SQL/bookshelf.sql', 100)
     generate_participation()
     print('eee')
 

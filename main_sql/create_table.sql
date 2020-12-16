@@ -109,6 +109,7 @@ CREATE TABLE location(
     id_state integer references location,
     name varchar(100) NOT NULL
 );
+
 CREATE TABLE resident( -- тут нужен какой-то клюдч? или он автоматом создается. Я просто что-то не понимаю
     id_character integer references character ON DELETE RESTRICT ON UPDATE RESTRICT,
     id_location integer references location ON DELETE RESTRICT ON UPDATE RESTRICT,
